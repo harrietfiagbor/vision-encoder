@@ -24,16 +24,25 @@ class CLIPVisionTower():
 
     @torch.inference_mode
     def forward(self, image, text):
-        with open(args.data_url) as data:
-            for _values in data.values():
-                image = _values['image']
-                text = _values['text']
-                inputs = self.processor(
-                    text=text,
-                    images=image,
-                    return_tensors="pt",
-                    padding=True
-                )
-                outputs = self.vision_tower(**inputs)
-                logits_per_image = outputs.logits_per_image
-                probs = logits_per_image.softmax(dim=1)
+        inputs = self.processor(
+            text=text,
+            images=image,
+            return_tensors="pt",
+            padding=True
+        )
+        outputs = self.vision_tower(**inputs)
+        logits_per_image = outputs.logits_per_image
+        probs = logits_per_image.softmax(dim=1)
+
+
+_encoder = CLIPVisionTower()
+
+
+def use_encoder():
+    with open(args.data_url) as data:
+        for _values in data.values():
+            image = _values['image']
+            text = _values['text']
+
+    if _encoder.is_loaded:
+        _encoder.forward(image=image, text=text)
