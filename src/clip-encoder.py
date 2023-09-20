@@ -34,6 +34,8 @@ class CLIPVisionTower():
         logits_per_image = outputs.logits_per_image
         probs = logits_per_image.softmax(dim=1)
 
+        return probs
+
 
 _encoder = CLIPVisionTower()
 
